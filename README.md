@@ -21,7 +21,7 @@
 8. Enter the src folder of cloned github repository and run the code: python FindJavaFiles.py.
 #This file will transform you java files into xml format. Change the path to your srcml, input java project and output folder. 
 9. Once all the files are converted to xml format. Run the code from src folder: python RunStereotype.py
-# This file will add stereotypes in xml code. Change path to your srcmlOutput and finalOutput folder.
+#This file will add stereotypes in xml code. Change path to your srcmlOutput and finalOutput folder.
 10. Run the code from src folder: python ExtractClassIdentifier.py
 #This file will extract all the identifier and tag them with NLTK and insert the result into a SQLite database.Change the path to your finalOutput and database folder.
 11. To tag xml file using srcMLPOSTagger run the code by redirecting from stdin -- ./bin/lexicalsmarkup < file.xml 	
