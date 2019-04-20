@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<unit xmlns="http://www.srcML.org/srcML/src" revision="0.9.5" language="Java" filename="C:/Users/satyajit/Documents/Capstone/spring-boot-master\spring-boot-project\spring-boot-tools\spring-boot-test-support\src\main\java\org\springframework\boot\testsupport\testcontainers\Container.java"><comment type="block">/*
+ * Copyright 2012-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */</comment>
+
+<package>package <name><name>org</name><operator>.</operator><name>springframework</name><operator>.</operator><name>boot</name><operator>.</operator><name>testsupport</name><operator>.</operator><name>testcontainers</name></name>;</package>
+
+<import>import <name><name>java</name><operator>.</operator><name>util</name><operator>.</operator><name>function</name><operator>.</operator><name>Consumer</name></name>;</import>
+<import>import <name><name>java</name><operator>.</operator><name>util</name><operator>.</operator><name>function</name><operator>.</operator><name>Supplier</name></name>;</import>
+
+<import>import <name><name>org</name><operator>.</operator><name>junit</name><operator>.</operator><name>AssumptionViolatedException</name></name>;</import>
+<import>import <name><name>org</name><operator>.</operator><name>junit</name><operator>.</operator><name>rules</name><operator>.</operator><name>TestRule</name></name>;</import>
+<import>import <name><name>org</name><operator>.</operator><name>junit</name><operator>.</operator><name>runner</name><operator>.</operator><name>Description</name></name>;</import>
+<import>import <name><name>org</name><operator>.</operator><name>junit</name><operator>.</operator><name>runners</name><operator>.</operator><name>model</name><operator>.</operator><name>Statement</name></name>;</import>
+<import>import <name><name>org</name><operator>.</operator><name>testcontainers</name><operator>.</operator><name>DockerClientFactory</name></name>;</import>
+<import>import <name><name>org</name><operator>.</operator><name>testcontainers</name><operator>.</operator><name>containers</name><operator>.</operator><name>GenericContainer</name></name>;</import>
+
+<comment type="block" format="javadoc">/**
+ * {@link TestRule} for working with an optional Docker environment. Spins up a
+ * {@link GenericContainer} if a valid docker environment is found.
+ *
+ * @author Madhura Bhave
+ * @author Phillip Webb
+ */</comment>
+<class>class <name>Container</name> <super><implements>implements <name>TestRule</name></implements></super> <block>{
+
+	<decl_stmt><decl><specifier>private</specifier> <type><specifier>final</specifier> <name>int</name></type> <name>port</name></decl>;</decl_stmt>
+
+	<decl_stmt><decl><specifier>private</specifier> <type><specifier>final</specifier> <name><name>Supplier</name><argument_list type="generic">&lt;<argument><name><name>GenericContainer</name><argument_list type="generic">&lt;<argument><name>?</name></argument>&gt;</argument_list></name></argument>&gt;</argument_list></name></type> <name>containerFactory</name></decl>;</decl_stmt>
+
+	<decl_stmt><decl><specifier>private</specifier> <type><name><name>GenericContainer</name><argument_list type="generic">&lt;<argument><name>?</name></argument>&gt;</argument_list></name></type> <name>container</name></decl>;</decl_stmt>
+
+	<sterotype>constructor </sterotype>
+	<constructor><parameter_list type="generic">&lt;<parameter><name>T</name> <extends>extends <name><name>GenericContainer</name><argument_list type="generic">&lt;<argument><name>T</name></argument>&gt;</argument_list></name></extends></parameter>&gt;</parameter_list> <name>Container</name><parameter_list>(<parameter><decl><type><name>String</name></type> <name>dockerImageName</name></decl></parameter>, <parameter><decl><type><name>int</name></type> <name>port</name></decl></parameter>)</parameter_list> <block>{
+		<expr_stmt><expr><call><name>this</name><argument_list>(<argument><expr><name>dockerImageName</name></expr></argument>, <argument><expr><name>port</name></expr></argument>, <argument><expr><literal type="null">null</literal></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+	}</block></constructor>
+
+	<sterotype>constructor </sterotype>
+	<constructor><annotation>@<name>SuppressWarnings</name><argument_list>(<argument><expr><block>{ <expr><literal type="string">"unchecked"</literal></expr>, <argument><expr><literal type="string">"resource"</literal></expr></argument> }</block></expr></argument>)</argument_list></annotation>
+	<parameter_list type="generic">&lt;<parameter><name>T</name> <extends>extends <name><name>GenericContainer</name><argument_list type="generic">&lt;<argument><name>T</name></argument>&gt;</argument_list></name></extends></parameter>&gt;</parameter_list> <name>Container</name><parameter_list>(<parameter><decl><type><name>String</name></type> <name>dockerImageName</name></decl></parameter>, <parameter><decl><type><name>int</name></type> <name>port</name></decl></parameter>,
+			<parameter><decl><type><name><name>Consumer</name><argument_list type="generic">&lt;<argument><name>T</name></argument>&gt;</argument_list></name></type> <name>customizer</name></decl></parameter>)</parameter_list> <block>{
+		<expr_stmt><expr><name><name>this</name><operator>.</operator><name>port</name></name> <operator>=</operator> <name>port</name></expr>;</expr_stmt>
+		<expr_stmt><expr><name><name>this</name><operator>.</operator><name>containerFactory</name></name> <operator>=</operator> <lambda><parameter_list>()</parameter_list> -&gt; <block>{
+			<decl_stmt><decl><type><name>T</name></type> <name>container</name> <init>= <expr><operator>(</operator><name>T</name><operator>)</operator> <operator>new</operator> <call><name><name>GenericContainer</name><argument_list type="generic">&lt;&gt;</argument_list></name><argument_list>(<argument><expr><name>dockerImageName</name></expr></argument>)</argument_list></call>
+					<operator>.</operator><call><name>withExposedPorts</name><argument_list>(<argument><expr><name>port</name></expr></argument>)</argument_list></call></expr></init></decl>;</decl_stmt>
+			<if>if <condition>(<expr><name>customizer</name> <operator>!=</operator> <literal type="null">null</literal></expr>)</condition><then> <block>{
+				<expr_stmt><expr><call><name><name>customizer</name><operator>.</operator><name>accept</name></name><argument_list>(<argument><expr><name>container</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+			}</block></then></if>
+			<return>return <expr><name>container</name></expr>;</return>
+		}</block></lambda></expr>;</expr_stmt>
+	}</block></constructor>
+
+	<sterotype>controller collaborator </sterotype>
+	<function><annotation>@<name>Override</name></annotation>
+	<specifier>public</specifier> <type><name>Statement</name></type> <name>apply</name><parameter_list>(<parameter><decl><type><name>Statement</name></type> <name>base</name></decl></parameter>, <parameter><decl><type><name>Description</name></type> <name>description</name></decl></parameter>)</parameter_list> <block>{
+		<try>try <block>{
+			<expr_stmt><expr><call><name><name>DockerClientFactory</name><operator>.</operator><name>instance</name></name><argument_list>()</argument_list></call><operator>.</operator><call><name>client</name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+		}</block>
+		<catch>catch <parameter_list>(<parameter><decl><type><name>Throwable</name></type> <name>ex</name></decl></parameter>)</parameter_list> <block>{
+			<return>return <expr><operator>new</operator> <call><name>SkipStatement</name><argument_list>()</argument_list></call></expr>;</return>
+		}</block></catch></try>
+		<expr_stmt><expr><name><name>this</name><operator>.</operator><name>container</name></name> <operator>=</operator> <call><name><name>this</name><operator>.</operator><name>containerFactory</name><operator>.</operator><name>get</name></name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+		<return>return <expr><call><name><name>this</name><operator>.</operator><name>container</name><operator>.</operator><name>apply</name></name><argument_list>(<argument><expr><name>base</name></expr></argument>, <argument><expr><name>description</name></expr></argument>)</argument_list></call></expr>;</return>
+	}</block></function>
+
+	<sterotype>controller stateless </sterotype>
+	<function><specifier>public</specifier> <type><name>int</name></type> <name>getMappedPort</name><parameter_list>()</parameter_list> <block>{
+		<return>return <expr><call><name><name>this</name><operator>.</operator><name>container</name><operator>.</operator><name>getMappedPort</name></name><argument_list>(<argument><expr><name><name>this</name><operator>.</operator><name>port</name></name></expr></argument>)</argument_list></call></expr>;</return>
+	}</block></function>
+
+	<class><specifier>private</specifier> <specifier>static</specifier> class <name>SkipStatement</name> <super><extends>extends <name>Statement</name></extends></super> <block>{
+
+		<sterotype>controller incidental </sterotype>
+		<function><annotation>@<name>Override</name></annotation>
+		<specifier>public</specifier> <type><name>void</name></type> <name>evaluate</name><parameter_list>()</parameter_list> <block>{
+			<throw>throw <expr><operator>new</operator> <call><name>AssumptionViolatedException</name><argument_list>(
+					<argument><expr><literal type="string">"Could not find a valid Docker environment."</literal></expr></argument>)</argument_list></call></expr>;</throw>
+		}</block></function>
+
+	}</block></class>
+
+}</block></class>
+</unit>
